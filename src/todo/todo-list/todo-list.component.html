@@ -1,0 +1,136 @@
+<div class="container my-5">
+  <!-- search field and add todo button -->
+  <div class="d-flex flex-row justify-content-between mb-3">
+    <div class="p-2">
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search for todo"
+          aria-describedby="button-addon2"
+          [(ngModel)]="searchInputValue"
+        />
+        <button
+          class="btn btn-outline-secondary"
+          type="button"
+          id="button-addon2"
+          (click)="onSearchTodo($event)"
+        >
+          Search
+        </button>
+      </div>
+    </div>
+    <div class="p-2 text-center number-task">
+      Number of Tasks : {{ tasks.length }}
+    </div>
+    <div class="p-2">
+      <button
+        type="button"
+        class="btn btn-info add-todo"
+        routerLinkActive=""
+        (click)="onAddTodo()"
+      >
+        Add Todo
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading" class="adjust-height">
+    <!-- todo list container -->
+    <div
+      class="d-flex justify-content-between m-3 p-2 text-center todo-container"
+      *ngFor="let task of tasks"
+    >
+      <!-- Checkbox container -->
+      <div class="d-flex ps-4">
+        <input
+          class="form-check-input me-2 mt-2"
+          type="checkbox"
+          id="status"
+          [value]="task.status"
+          [checked]="task.status"
+          (change)="onCheckboxTriggered($event, task)"
+        />
+        <label
+          [ngClass]="task.status ? 'completed-task' : 'progress-task'"
+          class="form-check-label todo-heading mt-1"
+          for="status"
+        >
+          {{ task.name }}
+        </label>
+        <p
+          [ngClass]="task.status ? 'completed-task' : 'progress-task'"
+          class="ms-3 todo-description"
+        >
+          {{ task.description }}
+        </p>
+      </div>
+      <!-- status badge -->
+      <div class="mt-2">
+        <span
+          class="badge rounded-pill text-bg-info"
+          [ngClass]="task.status ? 'completed' : 'in-progress'"
+          >{{ task.status ? "completed" : "in progress" }}</span
+        >
+      </div>
+      <!-- event controllers -->
+      <div>
+        <button type="button" class="btn ctr-btn" (click)="onEditTask(task)">
+          Edit
+        </button>
+        <button
+          *ngIf="currentButtonId !== task.id"
+          type="button"
+          class="btn ctr-btn"
+          (click)="onDeleteTask(task.id)"
+        >
+          Delete
+        </button>
+        <button
+          *ngIf="currentButtonId === task.id"
+          class="btn ctr-btn"
+          type="button"
+        >
+          <span
+            class="spinner-border spinner-border-sm"
+            aria-hidden="true"
+          ></span>
+          <span role="status">Loading...</span>
+        </button>
+      </div>
+    </div>
+    <!-- if no task item available -->
+    <div
+      *ngIf="tasks.length === 0 && !searchInputValue"
+      class="text-center no-tasks"
+    >
+      No Todo task available, Add New Task
+    </div>
+
+    <!-- no result for search value -->
+    <div
+      *ngIf="tasks.length === 0 && searchInputValue"
+      class="text-center no-tasks"
+    >
+      <p>Task you are searching for, is not available.</p>
+
+      <button
+        type="button"
+        class="btn btn-info add-todo"
+        (click)="onClearSearch()"
+      >
+        Clear search
+      </button>
+    </div>
+  </div>
+
+  <!-- loader  -->
+  <div
+    *ngIf="isLoading"
+    class="d-flex justify-content-center align-items-center"
+  >
+    <div class="spinner-border loader-color" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</div>
